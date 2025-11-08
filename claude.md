@@ -59,6 +59,21 @@ version: 1.0.0
 - `@minhas skills/` → Skills customizadas do Ricardo
 - `skills_genericas/` → Exemplos e referências
 
+### Usando a Skill-Creator
+A skill-creator automatiza a criação de skills. Localizada em `@minhas skills/skill-creator/`.
+
+**Scripts disponíveis:**
+```bash
+# Criar nova skill (gera estrutura completa)
+python "@minhas skills/skill-creator/scripts/init_skill.py" nome-da-skill --path "@minhas skills/"
+
+# Validar skill antes de usar
+python "@minhas skills/skill-creator/scripts/quick_validate.py" "@minhas skills/nome-da-skill"
+
+# Empacotar skill em ZIP para distribuir
+python "@minhas skills/skill-creator/scripts/package_skill.py" "@minhas skills/nome-da-skill"
+```
+
 ---
 
 ## 📝 Áreas de Interesse para Skills
@@ -113,24 +128,35 @@ version: 1.0.0
 
 ---
 
-## 🚀 Comandos Git Rápidos
+## 🚀 Git - Configuração e Comandos
 
+### Configuração Inicial (já feito)
 ```bash
-# Status
+git config --global user.name "Ricardo Borged"
+git config --global user.email "ricardo.nilton@hotmail.com"
+```
+
+### Comandos do Dia a Dia
+```bash
+# Ver status das mudanças
 git status
 
-# Adicionar mudanças
+# Adicionar todas as mudanças
 git add .
 
-# Commit
-git commit -m "descrição"
+# Fazer commit
+git commit -m "descrição clara do que mudou"
 
-# Push
+# Enviar pro GitHub
 git push
 
-# Pull (no outro computador)
+# Puxar mudanças do outro computador
 git pull
 ```
+
+### Token GitHub
+Token configurado com permissão de escrita (Contents: Read and write).
+Para reconfigurar: `git remote set-url origin https://USERNAME:TOKEN@github.com/Rica-VibeCoding/claude-skills-ricardo.git`
 
 ---
 
