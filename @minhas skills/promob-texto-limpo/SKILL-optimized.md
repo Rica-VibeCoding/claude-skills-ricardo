@@ -19,110 +19,86 @@ Use when user provides messy Promob text that needs cleaning.
 
 ## Workflow
 
-### Step 1: Parse with Python
+### Step 1: Save Input to File
 
-Run the parser to do the heavy lifting:
-
-```python
-from promob_parser import PromobParser
-
-parser = PromobParser()
-data = parser.parse(input_text)
+Write user's text to temporary file:
+```bash
+# Use Write tool to save to /tmp/promob_input.txt
 ```
 
-The parser automatically:
-- Removes unwanted fields (Fita de Borda, Tipo de Fundo, etc.)
-- Cleans material names (Duratex Cor>Itapuã → MDF Duratex Itapuã)
-- Consolidates related sections
-- Categorizes items into proper sections
+### Step 2: Get Questions Data
 
-### Step 2: Ask Hardware Decisions
-
-**ALWAYS ask about Dobradiças and Corrediças** using multiSelect:
-
-```javascript
-// Dobradiças
-{
-  question: "Quais tipos de dobradiças utilizar?",
-  header: "Dobradiças",
-  multiSelect: true,
-  options: [
-    { label: "Blum Clip Top Blumotion", description: "Premium com amortecedor" },
-    { label: "Blum (genérica)", description: "Sem especificação" },
-    { label: "Hettich Sensys", description: "Hettich com amortecedor" },
-    { label: "Hafele c/amortecedor", description: "Hafele premium" },
-    { label: "Hafele s/amortecedor", description: "Hafele básica" },
-    { label: "Dobradiça c/amortecedor (generic)", description: "Genérica premium" },
-    { label: "Dobradiça s/amortecedor (generic)", description: "Genérica básica" }
-  ]
-}
-
-// Corrediças
-{
-  question: "Quais tipos de corrediças utilizar?",
-  header: "Corrediças",
-  multiSelect: true,
-  options: [
-    { label: "Quadro/Invisível", description: "Corrediça quadro" },
-    { label: "Telescópica", description: "Corrediça telescópica" },
-    { label: "Nenhuma", description: "Sem corrediças" }
-  ]
-}
+Run parser in questions mode to identify what needs to be asked:
+```bash
+python3 "@minhas skills/promob-texto-limpo/promob_parser.py" /tmp/promob_input.txt --questions
 ```
 
-### Step 3: Handle Unknown Items
+This returns JSON with:
+- `dobradicas_found`: Hinges found in text (e.g., ["Blum Clip Top Blumotion", "Hettich Sensys"])
+- `corredicas_found`: Drawer slides found (usually empty)
+- `unknown_items`: Items needing classification
+- `needs_dobradica_question`: true (always ask)
+- `needs_corredica_question`: true (always ask)
 
-If `data.unknown_items` has entries, ask user to classify:
+### Step 3: Ask User Questions
 
-**First Level** (common categories):
-```javascript
-{
-  question: `Encontrei "${item}". Em qual categoria incluir?`,
-  options: [
-    { label: "COMPONENTES", description: "Organizadores, lixeiras, etc" },
-    { label: "FERRAGENS", description: "Hardware, mecanismos" },
-    { label: "ACESSÓRIOS", description: "Cabideiros, ponteiras" },
-    { label: "Nenhuma das anteriores", description: "Ver todas as categorias" },
-    { label: "Ignorar", description: "Não incluir no texto final" }
-  ]
-}
+**ALWAYS use AskUserQuestion tool for hardware:**
+
+**Question 1 - Dobradiças (multiSelect: TRUE):**
+```
+question: "Quais tipos de dobradiças utilizar?"
+header: "Dobradiças"
+multiSelect: true
+options:
+  - Blum Clip Top Blumotion (Premium com amortecedor)
+  - Blum (genérica) (Sem especificação)
+  - Hettich Sensys (Hettich com amortecedor)
+  - Hafele c/amortecedor (Hafele premium)
+  - Hafele s/amortecedor (Hafele básica)
+  - Dobradiça c/amortecedor (generic) (Genérica premium)
+  - Dobradiça s/amortecedor (generic) (Genérica básica)
 ```
 
-**Second Level** (if "Nenhuma das anteriores"):
-Show all categories: CAIXA, PORTAS / FRENTES, PUXADORES, PORTA DE VIDRO, FERRAGENS, PAINÉIS / TAMPOS / TAMPONAMENTOS, VIDROS, COMPONENTES, ESTRUTURA, SERRALHERIA, ILUMINAÇÃO, ACESSÓRIOS, PORTAS DE PASSAGEM, Criar nova categoria, Ignorar.
-
-### Step 4: Generate Output
-
-```python
-output = parser.format_output(
-    include_dobradica=user_dobradica_choices,
-    include_corredica=user_corredica_choices
-)
+**Question 2 - Corrediças (multiSelect: TRUE):**
+```
+question: "Quais tipos de corrediças utilizar?"
+header: "Corrediças"
+multiSelect: true
+options:
+  - Quadro/Invisível (Corrediça quadro)
+  - Telescópica (Corrediça telescópica)
+  - Nenhuma (Sem corrediças)
 ```
 
-The output is plain text, ready to paste into Promob.
-
-### Step 5: Present Result
-
-Show the cleaned text with processing report:
-
+**Question 3 - Unknown Items (if any):**
+For each unknown item, ask classification:
 ```
-──────────────────────────────────
-RELATÓRIO DE PROCESSAMENTO
-
-Processado automaticamente:
-✓ Removidas fitas de borda (X linhas)
-✓ Removidos tipos de fundo (X linhas)
-✓ Convertidos formatos MDF (X itens)
-✓ Consolidadas seções relacionadas
-
-Decisões do usuário:
-✓ Dobradiça: [selections]
-✓ Corrediça: [selections]
-✓ [Unknown item classifications if any]
-
-Tempo de processamento: ~0.1s (parser) + decisões do usuário
+question: "Encontrei 'Módulo s/ Rodapé'. Em qual categoria incluir?"
+header: "Item"
+multiSelect: false
+options:
+  - COMPONENTES (Organizadores, lixeiras, etc)
+  - FERRAGENS (Hardware, mecanismos)
+  - ACESSÓRIOS (Cabideiros, ponteiras)
+  - CAIXA (Cores, estruturas, gavetas)
+  - Ignorar (Não incluir no texto final)
 ```
+
+### Step 4: Generate Final Output
+
+Run parser with user's choices:
+```bash
+python3 "@minhas skills/promob-texto-limpo/promob_parser.py" /tmp/promob_input.txt \
+  --dobradicas "Blum Clip Top Blumotion,Hettich Sensys" \
+  --corredicas "Quadro/Invisível"
+```
+
+Note: Join multiple selections with commas (no spaces around commas).
+
+### Step 5: Present Clean Text
+
+Copy the parser output and present to user WITHOUT markdown code blocks.
+The text is ready to paste directly into Promob's text box.
 
 ## Technical Details
 

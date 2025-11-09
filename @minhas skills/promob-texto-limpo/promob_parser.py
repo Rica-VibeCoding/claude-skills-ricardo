@@ -5,7 +5,8 @@ Handles 90% of the work with code, uses AI only for decisions
 """
 
 import re
-from typing import Dict, List, Set, Tuple
+import json
+from typing import Dict, List, Set, Tuple, Optional
 from dataclasses import dataclass, field
 
 
@@ -26,6 +27,10 @@ class PromobData:
     acessorios: Dict[str, Set[str]] = field(default_factory=dict)
     portas_passagem: Dict[str, Set[str]] = field(default_factory=dict)
     unknown_items: List[Tuple[str, str]] = field(default_factory=list)  # (field, value)
+
+    # Hardware tracking for user interaction
+    dobradicas_found: Set[str] = field(default_factory=set)
+    corredicas_found: Set[str] = field(default_factory=set)
 
 
 class PromobParser:
@@ -88,6 +93,7 @@ class PromobParser:
 
         # FERRAGENS
         'Dobradiça': ('ferragens', 'Dobradiça'),
+        'Corrediça': ('ferragens', 'Corrediça'),
         'Fechadura': ('ferragens', 'Fechadura'),
 
         # PAINÉIS
@@ -210,6 +216,13 @@ class PromobParser:
         """Add value to the appropriate category"""
         category_data = getattr(self.data, category)
 
+        # Track hardware for user questions
+        if category == 'ferragens':
+            if subcategory == 'Dobradiça':
+                self.data.dobradicas_found.add(value)
+            elif subcategory == 'Corrediça':
+                self.data.corredicas_found.add(value)
+
         if category == 'vidros':
             category_data.add(value)
         else:
@@ -297,7 +310,7 @@ class PromobParser:
 
             # Other hardware
             for key in self.data.ferragens:
-                if key != 'Dobradiça':
+                if key not in ['Dobradiça', 'Corrediça']:
                     output.append(f"\n{key}:")
                     for v in sorted(self.data.ferragens[key]):
                         output.append(v)
@@ -327,25 +340,66 @@ class PromobParser:
         result = '\n'.join(output).strip()
         return result
 
+    def get_questions_data(self) -> dict:
+        """Get data needed for user questions (for Claude to use)"""
+        return {
+            'dobradicas_found': list(self.data.dobradicas_found),
+            'corredicas_found': list(self.data.corredicas_found),
+            'unknown_items': [{'field': f, 'value': v} for f, v in self.data.unknown_items],
+            'needs_dobradica_question': True,  # Always ask
+            'needs_corredica_question': True,  # Always ask
+        }
+
 
 def main():
     """CLI interface for testing"""
     import sys
 
     if len(sys.argv) < 2:
-        print("Usage: python promob_parser.py <input_file>")
+        print("Usage:")
+        print("  python promob_parser.py <input_file> [--questions]")
+        print("  python promob_parser.py <input_file> --dobradicas 'Blum,Hettich' --corredicas 'Quadro'")
         sys.exit(1)
 
-    with open(sys.argv[1], 'r', encoding='utf-8') as f:
+    input_file = sys.argv[1]
+
+    with open(input_file, 'r', encoding='utf-8') as f:
         input_text = f.read()
 
     parser = PromobParser()
     data = parser.parse(input_text)
 
-    # For testing, use default hardware
+    # Check mode
+    if '--questions' in sys.argv:
+        # Return questions data as JSON for Claude to use
+        questions_data = parser.get_questions_data()
+        print(json.dumps(questions_data, indent=2, ensure_ascii=False))
+        sys.exit(0)
+
+    # Parse dobradicas and corredicas from command line
+    dobradicas = []
+    corredicas = []
+
+    if '--dobradicas' in sys.argv:
+        idx = sys.argv.index('--dobradicas')
+        if idx + 1 < len(sys.argv):
+            dobradicas = [d.strip() for d in sys.argv[idx + 1].split(',')]
+
+    if '--corredicas' in sys.argv:
+        idx = sys.argv.index('--corredicas')
+        if idx + 1 < len(sys.argv):
+            corredicas = [c.strip() for c in sys.argv[idx + 1].split(',')]
+
+    # Default values if not provided
+    if not dobradicas:
+        dobradicas = ['Blum Clip Top Blumotion']
+    if not corredicas:
+        corredicas = ['Quadro/Invisível']
+
+    # Format output with user choices
     output = parser.format_output(
-        include_dobradica=['Blum Clip Top Blumotion'],
-        include_corredica=['Quadro/Invisível']
+        include_dobradica=dobradicas if dobradicas else None,
+        include_corredica=corredicas if corredicas else None
     )
 
     print(output)
