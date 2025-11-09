@@ -62,6 +62,22 @@ Remove prefixes like:
 
 Apply this to ALL sections: Caixa, Painéis/Tampos/Tamponamentos, Puxadores, Portas/Frentes.
 
+#### Automatic Item Classification:
+
+**Known Items to Specific Categories:**
+- **COMPONENTES:** Tip-On, organizadores, lixeiras, cestos aramados
+- **ESTRUTURA:** Base Estrutural, estrado, base cama, pés
+- **SERRALHERIA:** Metalon, perfis metálicos, cantoneiras
+- **ILUMINAÇÃO:** LED, spots, fitas LED, transformadores
+- **ACESSÓRIOS:** Cabideiros, porta-panos, suportes
+
+**When Unknown Item Found:**
+- Ask user how to classify with options:
+  - Ignore (don't include)
+  - Include as "Não Identificado"
+  - Assign to specific category
+  - Always ignore this item (remember for session)
+
 #### Section Consolidation:
 
 **Combine "Painéis" + "Tampos/Tamponamentos":**
@@ -119,16 +135,19 @@ Cores:
 
 Check for common items that may be missing from the specification:
 
-**Missing Corrediças (Drawer Slides)?**
-- If no slides mentioned, ask user to select:
-  - Telescópica
+**ALWAYS Ask About Corrediças (Drawer Slides):**
+- Always ask user which slide type to use (even if none mentioned):
   - Quadro/Invisível
+  - Telescópica
+  - Nenhuma (no slides needed)
 
-**Missing or Non-Standard Dobradiças (Hinges)?**
-- If no hinges OR hinges are NOT "Blum Clip Top Blumotion", ask user to select:
-  - Hafele c/amortecedor
+**ALWAYS Ask About Dobradiças (Hinges):**
+- Always ask user which hinge type to use, even if specified:
   - Blum Clip Top Blumotion
-  - Dobradiças c/amortecedor (generic)
+  - Hafele c/amortecedor
+  - Dobradiça c/amortecedor (generic/China)
+  - Dobradiça s/amortecedor (generic/China)
+  - Keep original (if different from options above)
 
 **Multiple Types Present?**
 - If text shows multiple types of the same hardware, confirm with user which to use
@@ -156,8 +175,11 @@ Format the final output with these rules:
 5. FERRAGENS
 6. PAINÉIS / TAMPOS / TAMPONAMENTOS
 7. VIDROS
-8. COMPONENTES AVULSOS (if applicable)
-9. PORTAS DE PASSAGEM
+8. COMPONENTES (Tip-On, organizadores, lixeiras)
+9. ESTRUTURA (Base Estrutural, estrados)
+10. SERRALHERIA (Metalon, perfis metálicos)
+11. ILUMINAÇÃO (LED, spots, fitas) - if applicable
+12. PORTAS DE PASSAGEM - if applicable
 
 **Example Clean Output (Vertical Simple Format):**
 ```
@@ -247,6 +269,18 @@ Present the cleaned text to the user with:
 - When in doubt about categorization, ask the user
 - **Format standard:** Vertical Simple (Variation 5) - one item per line, with sub-categories
 - **Key principle:** Vertical readability for easy text placement in Promob project
+
+## Interactive Behavior
+
+**ALWAYS ASK:**
+- Dobradiças type (even if specified in text)
+- Corrediças type (even if mentioned or not)
+- Multiple hardware conflicts (which to use)
+
+**AUTO-CLASSIFY:**
+- Known items go to their designated categories
+- Unknown items trigger user decision
+- Learn classifications during session (not permanently)
 
 ## Resources
 
