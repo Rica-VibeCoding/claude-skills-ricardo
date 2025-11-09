@@ -1,7 +1,6 @@
 ---
 name: promob-texto-limpo
 description: Transform messy Promob specification text into clean, organized documentation ready to paste into Promob's text box. Use when user provides furniture specification text from Promob that needs cleaning and organization.
-version: 1.0.0
 ---
 
 # Promob Texto Limpo
