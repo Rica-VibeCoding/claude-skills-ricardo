@@ -26,11 +26,14 @@ class PromobData:
     iluminacao: Dict[str, Set[str]] = field(default_factory=dict)
     acessorios: Dict[str, Set[str]] = field(default_factory=dict)
     portas_passagem: Dict[str, Set[str]] = field(default_factory=dict)
-    unknown_items: List[Tuple[str, str]] = field(default_factory=list)  # (field, value)
+    unknown_items: List[Tuple[str, str, str]] = field(default_factory=list)  # (field, value, section)
 
     # Hardware tracking for user interaction
     dobradicas_found: Set[str] = field(default_factory=set)
     corredicas_found: Set[str] = field(default_factory=set)
+
+    # Context tracking
+    puxador_perfil_rometal: Optional[str] = None  # Store Rometal handle model (e.g., "Cielo")
 
 
 class PromobParser:
@@ -76,7 +79,7 @@ class PromobParser:
 
         # PUXADORES
         'Puxador Perfil': ('puxadores', 'main'),
-        'Puxador Perfil Rometal': ('puxadores', 'main'),
+        'Puxador Perfil Rometal': ('_special', 'rometal_model'),  # Store Rometal model
         'Acab Puxador': ('puxadores', 'Acabamento Puxador'),
         'Puxador Externo': ('puxadores', 'main'),
         'Acab Pux Externo': ('puxadores', 'Acabamento Puxador'),
@@ -89,6 +92,7 @@ class PromobParser:
         'Porta Perfil': ('porta_vidro', 'Porta Perfil'),
         'Perfil Rometal': ('porta_vidro', 'Perfil Rometal'),
         'Puxador': ('porta_vidro', 'Puxador'),
+        'Puxador Perfil Rometal': ('_special', 'rometal_model'),  # Store for later use
         'Vidros': ('vidros', None),
 
         # FERRAGENS
@@ -112,6 +116,10 @@ class PromobParser:
         # PORTAS DE PASSAGEM
         'Acab. Interno': ('portas_passagem', 'Acabamento Interno'),
         'Acab. Externo': ('portas_passagem', 'Acabamento Externo'),
+        'Puxador Externo': ('portas_passagem', 'Puxador Externo'),
+        'Puxador Interno': ('portas_passagem', 'Puxador Interno'),
+        'Acab Pux Externo': ('portas_passagem', 'Acabamento Puxador'),
+        'Acab Pux Interno': ('portas_passagem', 'Acabamento Puxador'),
     }
 
     def __init__(self):
@@ -134,8 +142,9 @@ class PromobParser:
                 if section in self.IGNORE_SECTIONS:
                     ignore_section = True
                     continue
-                # Environment sections: ignore title but process fields
+                # Environment sections: ignore title but process fields, but TRACK section name
                 if section in self.IGNORE_ENVIRONMENTS:
+                    current_section = section  # Update section name for tracking
                     ignore_section = False  # Process fields within
                     continue
                 current_section = section
@@ -144,11 +153,11 @@ class PromobParser:
 
             # Parse field: value format
             if not ignore_section and line.startswith('-'):
-                self._parse_field(line[1:].strip())
+                self._parse_field(line[1:].strip(), current_section)
 
         return self.data
 
-    def _parse_field(self, field_line: str):
+    def _parse_field(self, field_line: str, section: str = None):
         """Parse a field line: 'Field: Value1, Value2'"""
         if ':' not in field_line:
             return
@@ -171,14 +180,21 @@ class PromobParser:
         # Map field to category
         if field in self.FIELD_MAPPING:
             category, subcategory = self.FIELD_MAPPING[field]
+
+            # Special handling: Store Rometal handle model
+            if category == '_special' and subcategory == 'rometal_model':
+                for value in values:
+                    self.data.puxador_perfil_rometal = value.strip()
+                return
+
             for value in values:
                 cleaned_value = self._clean_value(value, field)
                 if cleaned_value:
-                    self._add_to_category(category, subcategory, cleaned_value)
+                    self._add_to_category(category, subcategory, cleaned_value, field)
         else:
             # Unknown field - store for AI decision
             for value in values:
-                self.data.unknown_items.append((field, value))
+                self.data.unknown_items.append((field, value, section or 'Unknown'))
 
     def _clean_value(self, value: str, field: str) -> str:
         """Clean and format values"""
@@ -212,7 +228,7 @@ class PromobParser:
 
         return value.strip()
 
-    def _add_to_category(self, category: str, subcategory: str, value: str):
+    def _add_to_category(self, category: str, subcategory: str, value: str, field: str = None):
         """Add value to the appropriate category"""
         category_data = getattr(self.data, category)
 
@@ -270,9 +286,31 @@ class PromobParser:
         add_section("PORTAS / FRENTES", self.data.portas_frentes,
                    ['Tipos', 'Acabamentos', 'Frentes Internas', 'Miolo Porta'])
 
-        # PUXADORES
-        add_section("PUXADORES", self.data.puxadores,
-                   ['items', 'Acabamento Puxador', 'Obispa'])
+        # PUXADORES (custom formatting for Rometal model)
+        if self.data.puxadores:
+            output.append("\n\nPUXADORES\n")
+
+            # Process items (main puxadores)
+            if 'items' in self.data.puxadores:
+                puxadores = sorted(self.data.puxadores['items'])
+                for puxador in puxadores:
+                    # If Rometal model is defined and this is a Rometal handle, prefix with model
+                    if self.data.puxador_perfil_rometal and 'Rometal' in puxador:
+                        output.append(f"{self.data.puxador_perfil_rometal} - {puxador}")
+                    else:
+                        output.append(puxador)
+
+            # Acabamento Puxador
+            if 'Acabamento Puxador' in self.data.puxadores:
+                output.append("\nAcabamento Puxador:")
+                for v in sorted(self.data.puxadores['Acabamento Puxador']):
+                    output.append(v)
+
+            # Obispa
+            if 'Obispa' in self.data.puxadores:
+                output.append("\nObispa:")
+                for v in sorted(self.data.puxadores['Obispa']):
+                    output.append(v)
 
         # PORTA DE VIDRO
         if self.data.porta_vidro or self.data.vidros:
@@ -332,9 +370,38 @@ class PromobParser:
         # SERRALHERIA
         add_section("SERRALHERIA", self.data.serralheria)
 
-        # PORTAS DE PASSAGEM
-        add_section("PORTAS DE PASSAGEM", self.data.portas_passagem,
-                   ['Acabamento Interno', 'Acabamento Externo', 'Puxador Externo', 'Puxador Interno'])
+        # PORTAS DE PASSAGEM (custom formatting)
+        if self.data.portas_passagem:
+            output.append("\n\nPORTAS DE PASSAGEM\n")
+
+            # Acabamentos first
+            for key in ['Acabamento Interno', 'Acabamento Externo']:
+                if key in self.data.portas_passagem:
+                    output.append(f"\n{key}:")
+                    for v in sorted(self.data.portas_passagem[key]):
+                        output.append(v)
+
+            # Acabamento Puxador
+            if 'Acabamento Puxador' in self.data.portas_passagem:
+                output.append("\nAcabamento Puxador:")
+                for v in sorted(self.data.portas_passagem['Acabamento Puxador']):
+                    output.append(v)
+
+            # Puxadores - special format
+            puxador_externo = None
+            puxador_interno = None
+
+            if 'Puxador Externo' in self.data.portas_passagem:
+                puxador_externo = ', '.join(sorted(self.data.portas_passagem['Puxador Externo']))
+            if 'Puxador Interno' in self.data.portas_passagem:
+                puxador_interno = ', '.join(sorted(self.data.portas_passagem['Puxador Interno']))
+
+            if puxador_externo or puxador_interno:
+                output.append("\nModelo do Puxador:")
+                if puxador_externo:
+                    output.append(f"Externo: {puxador_externo}")
+                if puxador_interno:
+                    output.append(f"Interno: {puxador_interno}")
 
         # Remove leading newlines
         result = '\n'.join(output).strip()
@@ -345,7 +412,7 @@ class PromobParser:
         return {
             'dobradicas_found': list(self.data.dobradicas_found),
             'corredicas_found': list(self.data.corredicas_found),
-            'unknown_items': [{'field': f, 'value': v} for f, v in self.data.unknown_items],
+            'unknown_items': [{'field': f, 'value': v, 'section': s} for f, v, s in self.data.unknown_items],
             'needs_dobradica_question': True,  # Always ask
             'needs_corredica_question': True,  # Always ask
         }
@@ -406,8 +473,8 @@ def main():
 
     if data.unknown_items:
         print("\n\n--- UNKNOWN ITEMS ---")
-        for field, value in data.unknown_items:
-            print(f"{field}: {value}")
+        for field, value, section in data.unknown_items:
+            print(f"{field}: {value} ({section})")
 
 
 if __name__ == '__main__':
