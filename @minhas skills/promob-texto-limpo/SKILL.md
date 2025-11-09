@@ -139,12 +139,14 @@ Use the AskUserQuestion tool to gather this information interactively.
 
 Format the final output with these rules:
 
-**Formatting Rules:**
-1. **Titles:** ALL CAPS, with 1 blank line before and after
+**Formatting Rules (Vertical Simple Format):**
+1. **Titles:** ALL CAPS, with 2 blank lines before and 1 blank line after
 2. **No special symbols:** No `*`, `-`, `>` or markdown formatting
-3. **Simple lists:** Each item starts with capital letter, no bullets
-4. **Compact spacing:** Close line spacing like printed document
-5. **Plain text only:** Ready to paste directly into Promob text box
+3. **Vertical lists:** Each item on its own line, no bullets or prefixes
+4. **Sub-items:** When there's a category (like "Cores:", "Tipos:"), add it on its own line followed by the items
+5. **Clean spacing:** Single line break between sub-categories within a section
+6. **Plain text only:** Ready to paste directly into Promob text box
+7. **One item per line:** Never use commas or slashes to separate items on same line
 
 **Section Order:**
 1. CAIXA
@@ -157,47 +159,75 @@ Format the final output with these rules:
 8. COMPONENTES AVULSOS (if applicable)
 9. PORTAS DE PASSAGEM
 
-**Example Clean Output:**
+**Example Clean Output (Vertical Simple Format):**
 ```
 CAIXA
 
 Cores:
-  MDF Branco TX
-  MDF Duratex Madeirado Itapuã
-  MDF Arauco Verde Jade
+MDF Branco TX
+MDF Duratex Madeirado Itapuã
+MDF Arauco Verde Jade
 
 
 PORTAS / FRENTES
 
+Tipos:
+Meia Cava Vertical
+Reta
+Perfil Borda
+
+Acabamentos:
 MDF Guararapes Terrino
+MDF Duratex Gianduia Trama
+
+Frentes Internas:
+MDF Branco TX
+
+Vidros:
+Reflecta Prata
 
 
 PUXADORES
 
-Cava Central 200mm
+Meia Cava Vertical
 Meia Cava 100mm
-Acabamento: MDF Duratex Madeirado Itapuã
+
+Acabamento:
+MDF Duratex Madeirado Itapuã
 
 
 FERRAGENS
 
-Dobradiça: Blum Clip Top Blumotion
-Corrediça: Quadro Invisível
-Fechadura: Fecho Rolete
+Dobradiça:
+Blum Clip Top Blumotion
+
+Corrediça:
+Quadro/Invisível
+
+Fechadura:
+Fecho Rolete
 
 
 PAINÉIS / TAMPOS / TAMPONAMENTOS
 
 MDF Guararapes Terrino
 MDF Duratex Gianduia Trama
+MDF Arauco Madeirado Sertanejo
 
 
 PORTA DE VIDRO
 
-Porta Perfil: Aba Zero RM-377
-Perfil Rometal: Preto
-Puxador: Luna Embutido Luna 100mm
-Vidros: Incolor
+Porta Perfil:
+Aba Zero RM-377
+
+Perfil Rometal:
+Preto
+
+Puxador:
+Luna Embutido Luna 100mm
+
+Vidros:
+Incolor
 ```
 
 ### Step 5: Deliver Result
@@ -215,6 +245,8 @@ Present the cleaned text to the user with:
 - Text serves as technical documentation for clients
 - Never lose information - use common sense to place unclear items logically
 - When in doubt about categorization, ask the user
+- **Format standard:** Vertical Simple (Variation 5) - one item per line, with sub-categories
+- **Key principle:** Vertical readability for easy text placement in Promob project
 
 ## Resources
 
