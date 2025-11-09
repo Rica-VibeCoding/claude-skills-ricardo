@@ -139,6 +139,7 @@ Check for common items that may be missing from the specification:
 - Always ask user which slide type to use (even if none mentioned):
   - Quadro/Invisível
   - Telescópica
+  - Ambas (both types in same project)
   - Nenhuma (no slides needed)
 
 **ALWAYS Ask About Dobradiças (Hinges):**
@@ -147,7 +148,8 @@ Check for common items that may be missing from the specification:
   - Hafele c/amortecedor
   - Dobradiça c/amortecedor (generic/China)
   - Dobradiça s/amortecedor (generic/China)
-  - Keep original (if different from options above)
+  - Múltiplas/Ambas (when project uses 2+ types)
+  - Manter original (if specified and different from options)
 
 **Multiple Types Present?**
 - If text shows multiple types of the same hardware, confirm with user which to use
