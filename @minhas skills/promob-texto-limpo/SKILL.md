@@ -224,26 +224,41 @@ Cores:
 
 Check for common items that may be missing from the specification:
 
-**ALWAYS Ask About Corrediças (Drawer Slides):**
-- Always ask user which slide type to use (even if none mentioned):
+**ALWAYS Ask About Dobradiças (Hinges) - USE MULTISELECT:**
+- Always use multiSelect: true to allow multiple selections
+- User can check one or more options:
+  - Blum Clip Top Blumotion
+  - Hettich Sensys
+  - Hafele c/amortecedor
+  - Dobradiça c/amortecedor (generic)
+  - Dobradiça s/amortecedor (generic)
+
+**ALWAYS Ask About Corrediças (Drawer Slides) - USE MULTISELECT:**
+- Always use multiSelect: true to allow multiple selections
+- User can check one or more options:
   - Quadro/Invisível
   - Telescópica
-  - Ambas (both types in same project)
-  - Nenhuma (no slides needed)
-
-**ALWAYS Ask About Dobradiças (Hinges):**
-- Always ask user which hinge type to use, even if specified:
-  - Blum Clip Top Blumotion
-  - Hafele c/amortecedor
-  - Dobradiça c/amortecedor (generic/China)
-  - Dobradiça s/amortecedor (generic/China)
-  - Múltiplas/Ambas (when project uses 2+ types)
-  - Manter original (if specified and different from options)
+  - Nenhuma
 
 **Multiple Types Present?**
 - If text shows multiple types of the same hardware, confirm with user which to use
 
 Use the AskUserQuestion tool to gather this information interactively.
+
+**Implementation for Hardware Questions:**
+When asking about dobradiças and corrediças:
+```javascript
+{
+  question: "Quais tipos de dobradiças utilizar?",
+  header: "Dobradiças",
+  multiSelect: true,  // CRITICAL - always true
+  options: [
+    { label: "Blum Clip Top Blumotion", description: "..." },
+    { label: "Hettich Sensys", description: "..." },
+    // etc
+  ]
+}
+```
 
 **Implementation for Unknown Items:**
 When encountering unknown item (e.g., "Suporte Microondas", "Fecho Toque"):
@@ -422,15 +437,11 @@ Observações:
 
 ## Interactive Behavior
 
-**ALWAYS ASK:**
-- Dobradiças type (even if specified in text)
-- Corrediças type (even if mentioned or not)
-- Multiple hardware conflicts (which to use)
-
-**When Multiple Options (use multiSelect):**
-- If user selects "Múltiplas/Ambas", follow up with multiSelect question
-- Show checkboxes for all options (better UX)
-- Example: "Which hinge types?" with checkboxes for each option
+**ALWAYS ASK (with multiSelect: true):**
+- Dobradiças: multiSelect with all options (user can check multiple)
+- Corrediças: multiSelect with all options (user can check multiple)
+- Better UX: checkboxes instead of radio buttons
+- User can select 1, 2, or more options as needed
 
 **AUTO-CLASSIFY:**
 - Known items go to their designated categories
