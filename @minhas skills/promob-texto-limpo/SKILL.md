@@ -71,12 +71,33 @@ Apply this to ALL sections: Caixa, Painéis/Tampos/Tamponamentos, Puxadores, Por
 - **ILUMINAÇÃO:** LED, spots, fitas LED, transformadores
 - **ACESSÓRIOS:** Cabideiros, porta-panos, suportes
 
-**When Unknown Item Found:**
-- Ask user how to classify with options:
-  - Ignore (don't include)
-  - Include as "Não Identificado"
-  - Assign to specific category
-  - Always ignore this item (remember for session)
+**When Unknown Item Found - Two-Level Decision:**
+
+*First Level - Common Categories:*
+- Ask user to classify in main categories:
+  - COMPONENTES
+  - FERRAGENS
+  - ACESSÓRIOS
+  - Nenhuma das anteriores (show all categories)
+  - Ignorar (don't include in final text)
+
+*Second Level - All Categories (if "Nenhuma" selected):*
+- Show complete list:
+  - CAIXA
+  - PORTAS / FRENTES
+  - PUXADORES
+  - PORTA DE VIDRO
+  - FERRAGENS
+  - PAINÉIS / TAMPOS / TAMPONAMENTOS
+  - VIDROS
+  - COMPONENTES
+  - ESTRUTURA
+  - SERRALHERIA
+  - ILUMINAÇÃO
+  - ACESSÓRIOS
+  - PORTAS DE PASSAGEM
+  - Criar nova categoria
+  - Ignorar definitivamente
 
 #### Section Consolidation:
 
@@ -155,6 +176,13 @@ Check for common items that may be missing from the specification:
 - If text shows multiple types of the same hardware, confirm with user which to use
 
 Use the AskUserQuestion tool to gather this information interactively.
+
+**Implementation for Unknown Items:**
+When encountering unknown item (e.g., "Suporte Microondas", "Fecho Toque"):
+1. First question: "Encontrei [item]. Em qual categoria incluir?"
+   - Options: COMPONENTES, FERRAGENS, ACESSÓRIOS, Nenhuma das anteriores, Ignorar
+2. If "Nenhuma das anteriores" selected, second question shows ALL categories
+3. Remember classification for entire session (not permanently)
 
 ### Step 4: Generate Clean Output
 
