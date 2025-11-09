@@ -33,15 +33,15 @@ Accept the messy Promob text from the user. The text typically contains:
 
 ### Step 2: Process and Clean Text
 
-Apply the following cleaning rules systematically:
+Apply INCLUSIVE approach - process EVERYTHING except specific exclusions:
 
-#### Items to ALWAYS Remove:
+#### Items to ALWAYS Remove (ONLY THESE):
 - Entire "Decore" section
-- All "Fita de Borda" (edge banding) lines
-- All "Tipo de Fundo" lines and variations (Tipo de Fundo Superiores, Tipo de Fundo Despenseiro, etc.)
-- "COMPONENTES AVULSOS" section
-- Environment titles (Cozinha, Dormitório, Sala, etc.) - multiple environments may exist in same space
-- "Capa Suporte L: Branco"
+- All "Fita de Borda" (edge banding) lines - any line containing "Fita"
+- All "Tipo de Fundo" lines and variations
+- Environment titles (Cozinha, Dormitório, Sala, Banheiros, etc.)
+- Empty fields (lines ending with ": " with no content)
+- "COMPONENTES AVULSOS" section (integrate items elsewhere)
 
 #### Material/Color Formatting:
 When listing materials or colors in any section, use this format:
@@ -64,12 +64,64 @@ Apply this to ALL sections: Caixa, Painéis/Tampos/Tamponamentos, Puxadores, Por
 
 #### Automatic Item Classification:
 
-**Known Items to Specific Categories:**
-- **COMPONENTES:** Tip-On, organizadores, lixeiras, cestos aramados
-- **ESTRUTURA:** Base Estrutural, estrado, base cama, pés
-- **SERRALHERIA:** Metalon, perfis metálicos, cantoneiras
-- **ILUMINAÇÃO:** LED, spots, fitas LED, transformadores
-- **ACESSÓRIOS:** Cabideiros, porta-panos, suportes
+**Comprehensive Mapping (INCLUSIVE approach):**
+
+**CAIXA - Include subsections:**
+- Base Estrutural → subsection
+- Corpo de Gavetas → subsection
+- Frente Gaveta Interna → subsection
+- Cores → main content
+
+**PORTAS / FRENTES - Consolidate all door types:**
+- All from Portas/Frentes section
+- Cava 45 items → integrate here
+- Cava Tech items → integrate here
+- Basculantes → subsection
+
+**PUXADORES - All handle types:**
+- Puxador Perfil (any brand)
+- Puxador Concha
+- Meia Cava / Cava Central
+- Luna items from Rometal
+
+**PORTA DE VIDRO - Consolidate from multiple sources:**
+- Rometal section (Porta Perfil, Perfil, Puxador Luna, Vidros)
+- Vidraçaria section (Vidros)
+- Miolo Porta: Vidro (from Portas/Frentes)
+
+**FERRAGENS - All hardware:**
+- Dobradiça (all types)
+- Corrediça (all types)
+- Fechadura / Fecho Rolete
+- Vão Eletro
+
+**PAINÉIS / TAMPOS / TAMPONAMENTOS:**
+- All Painéis items
+- Ripas → important subsection
+- Tampo Composto
+
+**ACESSÓRIOS - Comprehensive list:**
+- Cabideiro (all types)
+- Ponteiras (Cava Y, Gola)
+- Puxador Concha (if not in PUXADORES)
+- Alternativas/Acabamentos
+- Tucano models
+- Capa Suporte (if needed)
+
+**COMPONENTES:**
+- Tip-On
+- Porta-Pano
+- Organizadores
+- Lixeiras
+
+**ESTRUTURA:**
+- Base Estrutural (if standalone)
+- Estrado
+- Pés
+
+**SERRALHERIA:**
+- Metalon
+- Perfis metálicos
 
 **When Unknown Item Found - Two-Level Decision:**
 
@@ -99,7 +151,23 @@ Apply this to ALL sections: Caixa, Painéis/Tampos/Tamponamentos, Puxadores, Por
   - Criar nova categoria
   - Ignorar definitivamente
 
+#### Critical Processing Rules:
+
+**ALWAYS KEEP - Never Remove:**
+- Puxadores (all types and brands)
+- Ripas (under PAINÉIS)
+- Base Estrutural / Corpo de Gavetas (under CAIXA)
+- Vidros/Vidraçaria info (consolidate to PORTA DE VIDRO)
+- Fechadura (to FERRAGENS)
+- All Acessórios items
+
 #### Section Consolidation:
+
+**Smart Consolidations:**
+1. **Rometal + Vidraçaria + "Miolo Porta: Vidro"** → PORTA DE VIDRO section
+2. **Cava 45 + Cava Tech + Basculantes** → PORTAS / FRENTES types
+3. **All Puxador mentions** → PUXADORES (from any section)
+4. **Base Estrutural + Corpo de Gavetas** → CAIXA subsections
 
 **Combine "Painéis" + "Tampos/Tamponamentos":**
 ```
@@ -211,7 +279,7 @@ Format the final output with these rules:
 11. ILUMINAÇÃO (LED, spots, fitas) - if applicable
 12. PORTAS DE PASSAGEM - if applicable
 
-**Example Clean Output (Vertical Simple Format):**
+**Example Clean Output (Vertical Simple Format - INCLUSIVE):**
 ```
 CAIXA
 
@@ -220,6 +288,12 @@ MDF Branco TX
 MDF Duratex Madeirado Itapuã
 MDF Arauco Verde Jade
 
+Base Estrutural:
+MDF Cru
+
+Corpo de Gavetas:
+MDF Branco TX
+
 
 PORTAS / FRENTES
 
@@ -227,6 +301,8 @@ Tipos:
 Meia Cava Vertical
 Reta
 Perfil Borda
+Cava 45
+Basculante
 
 Acabamentos:
 MDF Guararapes Terrino
@@ -235,14 +311,14 @@ MDF Duratex Gianduia Trama
 Frentes Internas:
 MDF Branco TX
 
-Vidros:
-Reflecta Prata
-
 
 PUXADORES
 
 Meia Cava Vertical
 Meia Cava 100mm
+Puxador Perfil Rometal 200mm
+Puxador Concha Cromado
+Luna Embutido Luna 100mm
 
 Acabamento:
 MDF Duratex Madeirado Itapuã
@@ -252,6 +328,7 @@ FERRAGENS
 
 Dobradiça:
 Blum Clip Top Blumotion
+Hafele c/amortecedor
 
 Corrediça:
 Quadro/Invisível
@@ -264,7 +341,9 @@ PAINÉIS / TAMPOS / TAMPONAMENTOS
 
 MDF Guararapes Terrino
 MDF Duratex Gianduia Trama
-MDF Arauco Madeirado Sertanejo
+
+Ripas:
+MDF Branco TX
 
 
 PORTA DE VIDRO
@@ -274,12 +353,28 @@ Aba Zero RM-377
 
 Perfil Rometal:
 Preto
+Natural
 
 Puxador:
 Luna Embutido Luna 100mm
 
 Vidros:
 Incolor
+Reflecta Prata
+
+
+ACESSÓRIOS
+
+Cabideiro:
+Oblongo Genérico
+Rometal Vesto
+
+Ponteiras:
+Cava Y Abertas
+Gola Abertas
+
+Tucano:
+SP-180
 ```
 
 ### Step 5: Deliver Result
@@ -289,16 +384,41 @@ Present the cleaned text to the user with:
 - Any clarifications made during processing
 - Confirmation of any user selections (hardware choices)
 
+**Include Processing Report:**
+```
+──────────────────────────────────
+RELATÓRIO DE PROCESSAMENTO
+
+Removido:
+✗ Seção Decore completa
+✗ Todas as fitas de borda (X linhas)
+✗ Tipos de fundo (X linhas)
+✗ Campos vazios (X linhas)
+
+Decisões do usuário:
+✓ Dobradiça: [user selection]
+✓ Corrediça: [user selection]
+✓ [Other decisions]
+
+Classificações automáticas:
+→ Item X → Category Y
+→ Consolidado: Rometal + Vidraçaria → PORTA DE VIDRO
+
+Observações:
+• [Any important notes]
+```
+
 ## Important Notes
 
 - This skill is used 10+ times per day in production workflow
 - Output must be plain text with NO formatting characters
 - Promob's text box is limited - compact formatting is essential
 - Text serves as technical documentation for clients
-- Never lose information - use common sense to place unclear items logically
-- When in doubt about categorization, ask the user
-- **Format standard:** Vertical Simple (Variation 5) - one item per line, with sub-categories
-- **Key principle:** Vertical readability for easy text placement in Promob project
+- **INCLUSIVE APPROACH:** Process everything except explicit exclusions
+- **NEVER LOSE INFORMATION** - when in doubt, include it and ask user
+- **Smart consolidation:** Combine related sections (Rometal→Porta de Vidro)
+- **Format standard:** Vertical Simple - one item per line, with sub-categories
+- **Key principle:** Completeness over minimalism - client needs ALL details
 
 ## Interactive Behavior
 
@@ -306,6 +426,11 @@ Present the cleaned text to the user with:
 - Dobradiças type (even if specified in text)
 - Corrediças type (even if mentioned or not)
 - Multiple hardware conflicts (which to use)
+
+**When Multiple Options (use multiSelect):**
+- If user selects "Múltiplas/Ambas", follow up with multiSelect question
+- Show checkboxes for all options (better UX)
+- Example: "Which hinge types?" with checkboxes for each option
 
 **AUTO-CLASSIFY:**
 - Known items go to their designated categories
