@@ -50,7 +50,8 @@ class PromobParser:
         'Fita de Borda Frentes Internas', 'Fita Ripas',
         'Tipo de Fundo', 'Tipo de Fundo Despenseiro', 'Tipo de Fundo Superiores',
         'Tipo de Fundo Armários de Canto', 'Tipo Fundo Inferior',
-        'Modelo s/ Rodapé', 'Gaveta Externa'
+        'Modelo s/ Rodapé', 'Gaveta Externa',
+        'Modelo Interno Canto L', 'Modelo Interno'
     }
 
     # Environment titles to skip
@@ -64,11 +65,9 @@ class PromobParser:
         # CAIXA
         'Caixas': ('caixa', 'Cores'),
         'Corpo de Gavetas': ('caixa', 'Corpo de Gavetas'),
-        'Frente Gaveta Interna': ('caixa', 'Frente Gaveta Interna'),
-        'Frente de Gaveta Criado': ('caixa', 'Frente de Gaveta Criado'),
+        'Frente Gaveta Interna': ('portas_frentes', 'Frente Gaveta Interna'),
+        'Frente de Gaveta Criado': ('portas_frentes', 'Frente de Gaveta Criado'),
         'Base Estrutural': ('caixa', 'Base Estrutural'),
-        'Modelo Interno Canto L': ('caixa', 'Modelo Interno Canto L'),
-        'Modelo Interno': ('caixa', 'Modelo Interno'),
 
         # PORTAS / FRENTES
         'Portas': ('portas_frentes', 'Tipos'),
@@ -284,7 +283,8 @@ class PromobParser:
 
         # PORTAS / FRENTES
         add_section("PORTAS / FRENTES", self.data.portas_frentes,
-                   ['Tipos', 'Acabamentos', 'Frentes Internas', 'Miolo Porta'])
+                   ['Tipos', 'Acabamentos', 'Frentes Internas', 'Frente Gaveta Interna',
+                    'Frente de Gaveta Criado', 'Miolo Porta'])
 
         # PUXADORES (custom formatting for Rometal model)
         if self.data.puxadores:
