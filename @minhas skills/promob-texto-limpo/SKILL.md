@@ -228,14 +228,16 @@ Check for common items that may be missing from the specification:
 - Always use multiSelect: true to allow multiple selections
 - User can check one or more options:
   - Blum Clip Top Blumotion
+  - Blum (genérica)
   - Hettich Sensys
   - Hafele c/amortecedor
+  - Hafele s/amortecedor
   - Dobradiça c/amortecedor (generic)
   - Dobradiça s/amortecedor (generic)
 
-**ALWAYS Ask About Corrediças (Drawer Slides) - SINGLE SELECT:**
-- Use multiSelect: false (radio button - only one choice)
-- User selects ONE option:
+**ALWAYS Ask About Corrediças (Drawer Slides) - USE MULTISELECT:**
+- Always use multiSelect: true to allow multiple selections
+- User can check one or more options:
   - Quadro/Invisível
   - Telescópica
   - Nenhuma
@@ -439,8 +441,8 @@ Observações:
 
 **ALWAYS ASK:**
 - Dobradiças: multiSelect: true (checkboxes - can select multiple)
-- Corrediças: multiSelect: false (radio buttons - select ONE only)
-- Better UX: appropriate selection method for each type
+- Corrediças: multiSelect: true (checkboxes - can select multiple)
+- Better UX: checkboxes allow flexible selection without "Ambas" option
 
 **AUTO-CLASSIFY:**
 - Known items go to their designated categories
