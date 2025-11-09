@@ -1,7 +1,8 @@
 ---
 name: promob-texto-limpo-web
 description: Transform messy Promob furniture specification text into clean, organized documentation using Python parser. Handles materials, hardware, and categorization with interactive questions.
-version: 2.0.0
+metadata:
+  version: 2.0.0
 ---
 
 # Promob Texto Limpo (Web Version)
