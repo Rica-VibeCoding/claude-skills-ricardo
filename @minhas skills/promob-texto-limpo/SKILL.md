@@ -233,9 +233,9 @@ Check for common items that may be missing from the specification:
   - Dobradiça c/amortecedor (generic)
   - Dobradiça s/amortecedor (generic)
 
-**ALWAYS Ask About Corrediças (Drawer Slides) - USE MULTISELECT:**
-- Always use multiSelect: true to allow multiple selections
-- User can check one or more options:
+**ALWAYS Ask About Corrediças (Drawer Slides) - SINGLE SELECT:**
+- Use multiSelect: false (radio button - only one choice)
+- User selects ONE option:
   - Quadro/Invisível
   - Telescópica
   - Nenhuma
@@ -437,11 +437,10 @@ Observações:
 
 ## Interactive Behavior
 
-**ALWAYS ASK (with multiSelect: true):**
-- Dobradiças: multiSelect with all options (user can check multiple)
-- Corrediças: multiSelect with all options (user can check multiple)
-- Better UX: checkboxes instead of radio buttons
-- User can select 1, 2, or more options as needed
+**ALWAYS ASK:**
+- Dobradiças: multiSelect: true (checkboxes - can select multiple)
+- Corrediças: multiSelect: false (radio buttons - select ONE only)
+- Better UX: appropriate selection method for each type
 
 **AUTO-CLASSIFY:**
 - Known items go to their designated categories
